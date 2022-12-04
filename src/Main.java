@@ -7,7 +7,6 @@ public class Main {
         WBTable newTable = manager.readPnAList();
         manager.writeCampaignsToStop(newTable);
 
-
         }
 
     }
