@@ -15,10 +15,6 @@ public class Utils {
         }
     }
 
-    public static String getPnALineByIndex(Integer index, WBTable table){
-        return table.printLineByIndex(index);
-    }
-
     public static Integer askForColumnNumber(String column, String[] columnNames) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Введите номер колонки для " + column);
@@ -42,10 +38,20 @@ public class Utils {
     }
 
     public static Integer parseIntForNA(String value){
-        if (value.equals("#N/A")){
+        if (value.equals("#N/A")||value.equals("")){
             return 0;
         }
         return Integer.parseInt(value);
     }
+
+    public static void indexCheck(WBTable table) throws IOException {
+        System.out.println("проверка индекса всей оборачиваемости");
+        System.out.println(table.turnoverIndexCheck());
+        System.out.println("проверка индекса остатка ВБ");
+        System.out.println(table.remainderIndexCheck());
+        System.out.println("press enter to continue");
+        System.in.read();
+    }
+
 
 }

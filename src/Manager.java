@@ -9,40 +9,52 @@ public class Manager {
         String[] tableLines = pnaFile.split("\n");
         WBTable PnAList = new WBTable();
         PnAList.createTable(tableLines);
+        PnAList.setInfo("А");
         return PnAList;
     }
 
-    public void writeCampaignsToStop(WBTable table) throws IOException {
+    public WBTable readPnJList(){
+        String pnjPath = "csv/pnjlist.csv";
+        String pnjFile = Utils.readFile(pnjPath);
+        String[] tableLines = pnjFile.split("\n");
+        WBTable PnJList = new WBTable();
+        PnJList.createTable(tableLines);
+        PnJList.setInfo("Ж");
+        return PnJList;
+    }
+
+    public void writeCampaignsToStopAndEnd(WBTable table) throws IOException {
         ArrayList<String> out = new ArrayList<>();
-        int turnoverIndex = Utils.askForColumnNumber("оборачиваемость всех",table.header);
-        int remainderIndex = Utils.askForColumnNumber("остаток вб",table.header);
+        ArrayList<String> outEnd = new ArrayList<>();
+        int turnoverIndex = table.turnoverIndex;
+        int remainderIndex = table.remainderIndex;
         for (int i = 1; i < table.data.length; i++){
             if (!table.getValueByColumnIndex(i,turnoverIndex).equals("")) {
-                int turnoverRate = Integer.parseInt(table.getValueByColumnIndex(i, turnoverIndex));
-                if (turnoverRate < 25) {
+                int turnoverRate = table.getIntegerValueByColumn(i,turnoverIndex);
+                int remainderWB = table.getIntegerValueByColumn(i,remainderIndex);
+                int remainderInWaiting = table.getIntegerValueByColumn(i,remainderIndex+2);
+                int remainderInStock = table.getIntegerValueByColumn(i,remainderIndex+3);
+                int remainderTotal = remainderWB+remainderInStock;
+                String itemGroup = table.getValueByColumnIndex(i,2);
+                String itemID = table.getValueByColumnIndex(i, 0);
+
+                if (turnoverRate < 30) { // оборачиваемость менее 30 дней
                     out.add(table.getValueByColumnIndex(i, 0));
+                    continue;
                 }
-                switch (table.getValueByColumnIndex(i,2)){
-                    case ("Актив/Осень / Сезонные"): {}
-                    case ("Актив/Весна - Лето (март-октябрь)"): {}
-                    case ("Актив/Актив / Внесезонные"): {}
-                    case ("Актив"): {
-                        int remainder = table.getIntegerValueByColumn(i,remainderIndex)+
-                                table.getIntegerValueByColumn(i, remainderIndex+1)+
-                                table.getIntegerValueByColumn(i, remainderIndex+2)+
-                                table.getIntegerValueByColumn(i, remainderIndex+3);
-                        if (remainder < 50 && turnoverRate > 25){
-                            out.add(table.getValueByColumnIndex(i, 0)+"check");
-                        }
+                if (remainderTotal < 50){
+                    if (table.illiquid.contains(itemGroup) && remainderInWaiting == 0){ // неликвид с малым остатком
+                        outEnd.add(itemID);//список для закрытия
+                        out.add(itemID);//добавляем тк табличка считает разницу между списками
+                    } else {
+                        out.add(itemID); //список для приостановки
                     }
-
-
                 }
             }
-
         }
-        Utils.writeArrayListToFile(out,"output/stopCampaignsA.txt");
-
+        Utils.writeArrayListToFile(out,table.outPath);
+        Utils.writeArrayListToFile(outEnd,table.outEndPath);
+        System.out.println("Скрипт выполнен");
     }
 
 
