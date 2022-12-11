@@ -24,8 +24,8 @@ public class Manager {
     }
 
     public void writeCampaignsToStopAndEnd(WBTable table) throws IOException {
-        ArrayList<String> out = new ArrayList<>();
-        ArrayList<String> outEnd = new ArrayList<>();
+        ArrayList<String> stopCampaigns = new ArrayList<>();
+        ArrayList<String> endCampaigns = new ArrayList<>();
         int turnoverIndex = table.turnoverIndex;
         int remainderIndex = table.remainderIndex;
         for (int i = 1; i < table.data.length; i++){
@@ -39,23 +39,49 @@ public class Manager {
                 String itemID = table.getValueByColumnIndex(i, 0);
 
                 if (turnoverRate < 30) { // оборачиваемость менее 30 дней
-                    out.add(table.getValueByColumnIndex(i, 0));
+                    stopCampaigns.add(table.getValueByColumnIndex(i, 0));
                     continue;
                 }
                 if (remainderTotal < 50){
                     if (table.illiquid.contains(itemGroup) && remainderInWaiting == 0){ // неликвид с малым остатком
-                        outEnd.add(itemID);//список для закрытия
-                        out.add(itemID);//добавляем тк табличка считает разницу между списками
+                        endCampaigns.add(itemID);//список для закрытия
+                        stopCampaigns.add(itemID);//добавляем тк табличка считает разницу между списками
                     } else {
-                        out.add(itemID); //список для приостановки
+                        stopCampaigns.add(itemID); //список для приостановки
                     }
                 }
             }
         }
-        Utils.writeArrayListToFile(out,table.outPath);
-        Utils.writeArrayListToFile(outEnd,table.outEndPath);
+        Utils.writeArrayListToFile(stopCampaigns,table.campaignsPath);
+        Utils.writeArrayListToFile(endCampaigns,table.campaignsEndPath);
         System.out.println("Скрипт выполнен");
     }
 
+    public void analyzePrices(WBTable table) {
+        ArrayList<String> priceChanges = new ArrayList<>();
+        int turnoverWBIndex = table.turnoverIndex + 1;
+        int currentProfitIndex = 8; //мэджик намба но оно экшели редко меняется, потом прикручу проверку
+        int remainderIndex = table.remainderIndex;
+        for (int i = 1; i < table.data.length; i++) {
+            if (!table.getValueByColumnIndex(i, turnoverWBIndex).equals("")) {
+                int turnoverWB = table.getIntegerValueByColumn(i,turnoverWBIndex);
+                int remainderWB = table.getIntegerValueByColumn(i,remainderIndex);
+                int remainderInWaiting = table.getIntegerValueByColumn(i,remainderIndex+2);
+                int remainderInStock = table.getIntegerValueByColumn(i,remainderIndex+3);
+                String itemGroup = table.getValueByColumnIndex(i,2);
+                String itemID = table.getValueByColumnIndex(i, 0);
 
-}
+                if (turnoverWB <= 15){
+                    if (table.activeGroups.contains(itemGroup)) {
+                        if (remainderInStock > 100) {
+
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    }

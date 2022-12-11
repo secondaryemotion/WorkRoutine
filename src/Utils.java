@@ -3,6 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.math.*;
 
 public class Utils {
 
@@ -51,6 +52,13 @@ public class Utils {
         System.out.println(table.remainderIndexCheck());
         System.out.println("press enter to continue");
         System.in.read();
+    }
+
+    public static int countPriceChangeForProfit(float baseProfit, float targetProfit, float commission, float price){
+        float commissionRate = commission/price;
+        float priceRemainder = price*(1-commissionRate-0.05f-baseProfit/100);
+        float newPrice = priceRemainder/(1-targetProfit/100-commissionRate-0.05f);
+        return Math.round(newPrice-price);
     }
 
 

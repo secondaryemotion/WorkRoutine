@@ -7,10 +7,16 @@ public class WBTable {
     public int remainderIndex;
     public Set<String> activeGroups;
     public Set<String> illiquidGroups;
-    public String illiquid = "Неликвид";
-    public String newGroups = "Актив/Новинки";
-    public String outPath;
-    public String outEndPath;
+    public final String illiquid = "Неликвид";
+    public final String newGroups = "Актив/Новинки";
+    public String campaignsPath;
+    public String campaignsEndPath;
+    public String pricesToChangePath;
+    public String IDsToAddToActivePath;
+    public String IDsToAddToNewPath;
+    public String IDsToAddToIlliquidPath;
+    public String IDsToOrderPath;
+    public String IDsToShipPath;
 
     public void createTable(String[] tableLines) {
         this.header = tableLines[0].split(",");
@@ -44,8 +50,9 @@ public class WBTable {
             "Актив/Спрос с сентября / Внесезонные","Актив","Актив/Весна - Лето (март-октябрь)",
             "Актив/Осень / Сезонные","Актив/Новый год / Сезонные");
             this.illiquidGroups = Set.of("Неликвид/Весна - лето / Неликвид","Неликвид/Март / Сезонные");
-            this.outPath = "output/stopCampaignsA.txt";
-            this.outEndPath = "output/endCampaignsA.txt";
+            this.campaignsPath = "output/campaigns/stopCampaignsA.txt";
+            this.campaignsEndPath = "output/campaigns/endCampaignsA.txt";
+            this.pricesToChangePath = "output/pricesA/outChangesA.csv";
         } else if (ip.equals("Ж")){
             this.turnoverIndex = 33;
             this.remainderIndex = 26;
@@ -54,8 +61,8 @@ public class WBTable {
                     "Актив/Осень / Сезонные","Актив/Новый год / Сезонные","Актив/Зима / Сезонные");
             this.illiquidGroups = Set.of("Неликвид/Весна - лето / Неликвид","Неликвид/Март / Сезонные",
             "Неликвид/Май / Сезонные (Пасха, 9 мая)","Неликвид/Лето (только лето) / Сезонные");
-            this.outPath = "output/stopCampaignsJ.txt";
-            this.outEndPath = "output/endCampaignsJ.txt";
+            this.campaignsPath = "output/campaigns/stopCampaignsJ.txt";
+            this.campaignsEndPath = "output/campaigns/endCampaignsJ.txt";
             } else {
             System.out.println("something went wrong");
         }
