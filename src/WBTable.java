@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Set;
 
 public class WBTable {
@@ -5,18 +6,12 @@ public class WBTable {
     public String[][] data;
     public int turnoverIndex;
     public int remainderIndex;
+    public int commissionIndex;
     public Set<String> activeGroups;
     public Set<String> illiquidGroups;
     public final String illiquid = "Неликвид";
-    public final String newGroups = "Актив/Новинки";
-    public String campaignsPath;
-    public String campaignsEndPath;
-    public String pricesToChangePath;
-    public String IDsToAddToActivePath;
-    public String IDsToAddToNewPath;
-    public String IDsToAddToIlliquidPath;
-    public String IDsToOrderPath;
-    public String IDsToShipPath;
+    public final String newGroup = "Актив/Новинки";
+    public HashMap<String,String> paths = new HashMap<>();
 
     public void createTable(String[] tableLines) {
         this.header = tableLines[0].split(",");
@@ -44,25 +39,34 @@ public class WBTable {
 
     public void setInfo(String ip){
         if (ip.equals("А")){
-            this.turnoverIndex = 32;
-            this.remainderIndex = 25;
+            this.turnoverIndex = 30;
+            this.remainderIndex = 26;
+            this.commissionIndex = 50;
             this.activeGroups = Set.of("Актив/Актив / Внесезонные","Актив/Проблемы с поставками / Дефицит",
             "Актив/Спрос с сентября / Внесезонные","Актив","Актив/Весна - Лето (март-октябрь)",
             "Актив/Осень / Сезонные","Актив/Новый год / Сезонные");
             this.illiquidGroups = Set.of("Неликвид/Весна - лето / Неликвид","Неликвид/Март / Сезонные");
-            this.campaignsPath = "output/campaigns/stopCampaignsA.txt";
-            this.campaignsEndPath = "output/campaigns/endCampaignsA.txt";
-            this.pricesToChangePath = "output/pricesA/outChangesA.csv";
+            this.paths.put("campaignsPath","output/campaigns/stopCampaignsA.txt");
+            this.paths.put("campaignsEndPath","output/campaigns/endCampaignsA.txt");
+            this.paths.put("pricesToChangePath","output/pricesA/outChangesA.txt");
+            this.paths.put("idsToAddToActivePath","output/pricesA/outAddToActiveA.txt");
+            this.paths.put("idsToAddToNewPath","output/pricesA/outAddToNewA.txt");
+            this.paths.put("idsToAddToIlliquidPath","output/pricesA/outAddToIlliquidA.txt");
+            this.paths.put("idsToOrderPath","output/pricesA/outOrderA.txt");
+            this.paths.put("idsToShipPath","output/pricesA/outShipA.txt");
+
         } else if (ip.equals("Ж")){
             this.turnoverIndex = 33;
             this.remainderIndex = 26;
+            this.commissionIndex = 51;
             this.activeGroups = Set.of("Актив/Актив / Внесезонные","Актив/Проблемы с поставками / Дефицит",
                     "Актив/Спрос с сентября / Внесезонные","Актив","Актив/Весна - Лето (март-октябрь)",
                     "Актив/Осень / Сезонные","Актив/Новый год / Сезонные","Актив/Зима / Сезонные");
             this.illiquidGroups = Set.of("Неликвид/Весна - лето / Неликвид","Неликвид/Март / Сезонные",
             "Неликвид/Май / Сезонные (Пасха, 9 мая)","Неликвид/Лето (только лето) / Сезонные");
-            this.campaignsPath = "output/campaigns/stopCampaignsJ.txt";
-            this.campaignsEndPath = "output/campaigns/endCampaignsJ.txt";
+            this.paths.put("campaignsPath","output/campaigns/stopCampaignsJ.txt");
+            this.paths.put("campaignsEndPath","output/campaigns/endCampaignsJ.txt");
+            this.paths.put("pricesToChangePath","output/pricesA/outChangesJ.csv");
             } else {
             System.out.println("something went wrong");
         }
@@ -74,6 +78,10 @@ public class WBTable {
 
     public String remainderIndexCheck(){
         return this.header[this.remainderIndex];
+    }
+
+    public String commissionIndexCheck(){
+        return this.header[this.commissionIndex];
     }
 
 

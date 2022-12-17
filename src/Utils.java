@@ -42,7 +42,7 @@ public class Utils {
         if (value.equals("#N/A")||value.equals("")){
             return 0;
         }
-        return Integer.parseInt(value);
+        return Integer.parseInt(value.replace("%",""));
     }
 
     public static void indexCheck(WBTable table) throws IOException {
@@ -50,16 +50,13 @@ public class Utils {
         System.out.println(table.turnoverIndexCheck());
         System.out.println("проверка индекса остатка ВБ");
         System.out.println(table.remainderIndexCheck());
+        System.out.println("проверка индекса комиссии");
+        System.out.println(table.commissionIndexCheck());
         System.out.println("press enter to continue");
         System.in.read();
     }
 
-    public static int countPriceChangeForProfit(float baseProfit, float targetProfit, float commission, float price){
-        float commissionRate = commission/price;
-        float priceRemainder = price*(1-commissionRate-0.05f-baseProfit/100);
-        float newPrice = priceRemainder/(1-targetProfit/100-commissionRate-0.05f);
-        return Math.round(newPrice-price);
-    }
+
 
 
 }

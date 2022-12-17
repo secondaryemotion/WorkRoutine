@@ -7,12 +7,14 @@ public class Main {
         WBTable newTableA = manager.readPnAList();
         WBTable newTableJ = manager.readPnJList();
 
-        Utils.indexCheck(newTableA);
-        Utils.indexCheck(newTableJ);
+        //Utils.indexCheck(newTableA);
+        //Utils.indexCheck(newTableJ);
 
 
-        manager.writeCampaignsToStopAndEnd(newTableA);
-        manager.writeCampaignsToStopAndEnd(newTableJ);
+        //manager.processCampaignsAndPrepareChangesList(newTableA, true);
+        //manager.processCampaignsAndPrepareChangesList(newTableJ,true);
+        //System.out.println(newTableA.paths.get("priceChanges"));
+        manager.processPricesAndPrepareChangesList(newTableA);
 
         }
 
