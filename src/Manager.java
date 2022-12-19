@@ -3,6 +3,18 @@ import java.util.ArrayList;
 
 public class Manager {
 
+    String turnoverWBName = "Обор посл день ВБ";
+    String currentProfitName = "Рентабельность";
+    String currentPriceName = "Стоимость";
+    String commissionName = "Новая комиссия";
+    String remainderWBName = "Склад WB";
+    String remainderInWaitingName = "Ожидание";
+    String remainderInStockName = "Мойсклад";
+    String itemGroupName = "Группа";
+    String itemIDName = "Номенклатура";
+    String saleProfitName = "Рентабельность с акцией -5";
+    String turnoverAllName = "Обор посл день (весь)";
+
     public WBTable readPnAList(){
         String pnaPath = "csv/pnalist.csv";
         String pnaFile = Utils.readFile(pnaPath);
@@ -26,8 +38,8 @@ public class Manager {
     public void processCampaignsAndPrepareChangesList(WBTable table, boolean isNewYear) throws IOException {
         ArrayList<String> stopCampaigns = new ArrayList<>();
         ArrayList<String> endCampaigns = new ArrayList<>();
-        int turnoverIndex = table.turnoverIndex;
-        int remainderIndex = table.remainderIndex;
+        int turnoverIndex = table.getColumnIndex(turnoverAllName);
+        int remainderIndex = table.getColumnIndex(remainderWBName);
         for (int i = 1; i < table.data.length; i++){
             if (!table.getValueByColumnIndex(i,turnoverIndex).equals("")) {
                 int turnoverRate = table.getIntegerValueByColumn(i,turnoverIndex);
@@ -75,11 +87,10 @@ public class Manager {
         ArrayList<String> idsToAddToIlliquid = new ArrayList<>();
         ArrayList<String> idsToOrder = new ArrayList<>();
         ArrayList<String> idsToShip = new ArrayList<>();
-        //Utils.askForColumnNumber("обор",table.header);
-        int turnoverWBIndex = table.turnoverIndex + 4;
-        int currentProfitIndex = 8; //мэджик намба но оно экшели редко меняется, потом прикручу проверку
-        int remainderIndex = table.remainderIndex;
-        int commissionIndex = table.commissionIndex;
+        int turnoverWBIndex = table.getColumnIndex(turnoverWBName);
+        int currentProfitIndex = table.getColumnIndex(currentProfitName);
+        int remainderIndex = table.getColumnIndex(remainderWBName);
+        int commissionIndex = table.getColumnIndex(commissionName);
         for (int i = 1; i < table.data.length; i++) {
             if (!table.getValueByColumnIndex(i, turnoverWBIndex).equals("")) {
                 int turnoverWB = table.getIntegerValueByColumn(i,turnoverWBIndex);
@@ -109,19 +120,19 @@ public class Manager {
                         if (remainderInStock >= 100) { //есть на складе, поднимаем на 5% и отгружаем
                             idsToShip.add(itemID);
                             int priceChange = countPriceChangeForProfit(currentProfit,currentProfit+5,currentCommission,currentPrice);
-                            priceChanges.add(itemID + "," + priceChange + ",актив есть на мс +5%");
+                            priceChanges.add(itemID + "," + priceChange + ",актив +5%");
                             if (itemGroup.equals(table.newGroup)){
                                 idsToAddToActive.add(itemID);
                             }
                             continue;
                         }
                         if (remainderInWaiting != 0){ //нет на складе, есть ожидание, поднимаем на 10%
-                            int priceChange = countPriceChangeForProfit(currentProfit,currentProfit+10,currentCommission,currentPrice);
-                            priceChanges.add(itemID + "," + priceChange + ",актив на складе менее 100 +10%");
+                            int priceChange = countPriceChangeForProfit(currentProfit,currentProfit+5,currentCommission,currentPrice);
+                            priceChanges.add(itemID + "," + priceChange + ",актив +5%");
                         } else { //нет на складе, нет ожидания. добавляем на закупку, +15%
                             idsToOrder.add(itemID);
-                            int priceChange = countPriceChangeForProfit(currentProfit,currentProfit+15,currentCommission,currentPrice);
-                            priceChanges.add(itemID + "," + priceChange+",актив нет ожидания +15%");
+                            int priceChange = countPriceChangeForProfit(currentProfit,currentProfit+5,currentCommission,currentPrice);
+                            priceChanges.add(itemID + "," + priceChange+",актив +5%");
                         }
                         if (itemGroup.equals(table.newGroup)){ //новинки также предлагаем в актив
                             idsToAddToActive.add(itemID);
@@ -144,7 +155,7 @@ public class Manager {
                             priceChanges.add(itemID + "," + priceChange+",новинки выше 20% в 20%");
                         } else if (currentProfit >= 10) { //снижаем на 2%
                             int priceChange = countPriceChangeForProfit(currentProfit, currentProfit - 2, currentCommission, currentPrice);
-                            priceChanges.add(itemID + "," + priceChange +",неликвид выше 10% -2%");
+                            priceChanges.add(itemID + "," + priceChange +",новинки выше 10% -2%");
                         } else {//предлагаем в неликвид
                             idsToAddToIlliquid.add(itemID);
                         }
