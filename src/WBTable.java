@@ -70,28 +70,19 @@ public class WBTable {
     }
 
     public void setIndexes(){
-        String turnoverWBName = "Обор посл день ВБ";
-        String currentProfitName = "Рентабельность";
-        String currentPriceName = "Стоимость";
-        String commissionName = "Новая комиссия";
-        String remainderWBName = "Склад WB";
-        String remainderInWaitingName = "Ожидание";
-        String remainderInStockName = "Мойсклад";
-        String itemGroupName = "Группа";
-        String itemIDName = "Номенклатура";
-        String saleProfitName = "Рентабельность с акцией -5";
-        String turnoverAllName = "Обор посл день (весь)";
-        this.indexes.put(turnoverWBName,this.header.indexOf(turnoverWBName));
-        this.indexes.put(currentProfitName,this.header.indexOf(currentProfitName));
-        this.indexes.put(currentPriceName,this.header.indexOf(currentPriceName));
-        this.indexes.put(commissionName,this.header.indexOf(commissionName));
-        this.indexes.put(remainderWBName,this.header.indexOf(remainderWBName));
-        this.indexes.put(remainderInWaitingName,this.header.indexOf(remainderInWaitingName));
-        this.indexes.put(remainderInStockName,this.header.indexOf(remainderInStockName));
-        this.indexes.put(itemGroupName,this.header.indexOf(itemGroupName));
-        this.indexes.put(itemIDName,this.header.indexOf(itemIDName));
-        this.indexes.put(saleProfitName,this.header.indexOf(saleProfitName));
-        this.indexes.put(turnoverAllName,this.header.indexOf(turnoverAllName));
+
+        this.indexes.put(Fields.turnoverWBName,this.header.indexOf(Fields.turnoverWBName));
+        this.indexes.put(Fields.currentProfitName,this.header.indexOf(Fields.currentProfitName));
+        this.indexes.put(Fields.currentPriceName,this.header.indexOf(Fields.currentPriceName));
+        this.indexes.put(Fields.currentCommissionName,this.header.indexOf(Fields.currentCommissionName));
+        this.indexes.put(Fields.remainderWBName,this.header.indexOf(Fields.remainderWBName));
+        this.indexes.put(Fields.remainderInWaitingName,this.header.indexOf(Fields.remainderInWaitingName));
+        this.indexes.put(Fields.remainderInStockName,this.header.indexOf(Fields.remainderInStockName));
+        this.indexes.put(Fields.itemGroupName,this.header.indexOf(Fields.itemGroupName));
+        this.indexes.put(Fields.itemIDName,this.header.indexOf(Fields.itemIDName));
+        this.indexes.put(Fields.saleProfitName,this.header.indexOf(Fields.saleProfitName));
+        this.indexes.put(Fields.turnoverAllName,this.header.indexOf(Fields.turnoverAllName));
+        this.indexes.put(Fields.salePriceName,this.header.indexOf(Fields.salePriceName));
     }
 
     public int getColumnIndex(String columnName){
@@ -101,6 +92,10 @@ public class WBTable {
             System.out.println("wrong column name");
             return 0;
         }
+    }
+
+    public String[] getUnitByIndex(int index){
+        return this.data[index];
     }
 
 
