@@ -24,28 +24,23 @@ public class Manager {
         return PnJList;
     }
 
-    /*public void processCampaignsAndPrepareChangesList(WBTable table, boolean isNewYear) throws IOException {
+    public void processCampaignsAndPrepareChangesList(WBTable table, boolean isNewYear) throws IOException {
         ArrayList<String> stopCampaigns = new ArrayList<>();
         ArrayList<String> endCampaigns = new ArrayList<>();
-        int turnoverIndex = table.getColumnIndex(turnoverAllName);
-        int remainderIndex = table.getColumnIndex(remainderWBName);
-        int remainderInWaitingIndex = table.getColumnIndex(remainderInWaitingName);
-        int remainderInStockIndex = table.getColumnIndex(remainderInStockName);
-        int itemGroupIndex = table.getColumnIndex(itemGroupName);
-        int itemIDIndex = table.getColumnIndex(itemIDName);
         for (int i = 1; i < table.data.length; i++) {
-            if (!table.getValueByColumnIndex(i, turnoverIndex).equals("")) {
-                int turnoverRate = table.getIntegerValueByColumn(i, turnoverIndex);
-                int remainderWB = table.getIntegerValueByColumn(i, remainderIndex);
-                int remainderInWaiting = table.getIntegerValueByColumn(i, remainderInWaitingIndex);
-                int remainderInStock = table.getIntegerValueByColumn(i, remainderInStockIndex);
+            if (!table.getValueByColumnIndex(i, 0).equals("")) {
+                Unit currentUnit = new Unit(table.data[i], table.indexes);
+                int turnoverRate = currentUnit.turnoverAll;
+                int remainderWB = currentUnit.remainderWB;
+                int remainderInWaiting = currentUnit.remainderInWaiting;
+                int remainderInStock = currentUnit.remainderInStock;
                 int remainderTotal = remainderWB + remainderInStock;
-                String itemGroup = table.getValueByColumnIndex(i, itemGroupIndex);
-                String itemID = table.getValueByColumnIndex(i, itemIDIndex);
+                String itemGroup = currentUnit.itemGroup;
+                String itemID = currentUnit.itemID;
 
                 if (turnoverRate < 30) { // оборачиваемость менее 30 дней
                     if (itemGroup.equals("Актив/Новый год / Сезонные") && isNewYear) {
-                        if (turnoverRate < (8)) {
+                        if (turnoverRate < (5)) {
                             stopCampaigns.add(itemID);
                             continue;
                         }
@@ -71,7 +66,7 @@ public class Manager {
 
     public void processCampaignsAndPrepareChangesList(WBTable table) throws IOException {
         processCampaignsAndPrepareChangesList(table, false);
-    }*/
+    }
 
     public void processPricesAndPrepareChangesList(WBTable table) throws IOException {
         ArrayList<String> priceChanges = new ArrayList<>();

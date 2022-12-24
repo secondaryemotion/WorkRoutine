@@ -83,6 +83,7 @@ public class WBTable {
         this.indexes.put(Fields.saleProfitName,this.header.indexOf(Fields.saleProfitName));
         this.indexes.put(Fields.turnoverAllName,this.header.indexOf(Fields.turnoverAllName));
         this.indexes.put(Fields.salePriceName,this.header.indexOf(Fields.salePriceName));
+        this.indexes.put(Fields.recentSalesName,this.header.indexOf(Fields.recentSalesName));
     }
 
     public int getColumnIndex(String columnName){
