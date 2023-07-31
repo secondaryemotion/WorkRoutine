@@ -38,33 +38,27 @@ public class WBTable {
         if (ip.equals("А")){
             this.activeGroups = Set.of("Актив/Актив / Внесезонные","Актив/Проблемы с поставками / Дефицит",
             "Актив/Спрос с сентября / Внесезонные","Актив","Актив/Весна - Лето (март-октябрь)",
-            "Актив/Осень / Сезонные","Актив/Новый год / Сезонные");
+            "Актив/Осень / Сезонные","Актив/Новый год / Сезонные","Актив/Не оформлено");
             this.illiquidGroups = Set.of("Неликвид/Весна - лето / Неликвид","Неликвид/Март / Сезонные");
             this.paths.put("campaignsPath","output/campaigns/stopCampaignsA.txt");
             this.paths.put("campaignsEndPath","output/campaigns/endCampaignsA.txt");
-            this.paths.put("pricesToChangePath","output/pricesA/outChangesA.txt");
-            this.paths.put("idsToAddToActivePath","output/pricesA/outAddToActiveA.txt");
-            this.paths.put("idsToAddToNewPath","output/pricesA/outAddToNewA.txt");
-            this.paths.put("idsToAddToIlliquidPath","output/pricesA/outAddToIlliquidA.txt");
-            this.paths.put("idsToOrderPath","output/pricesA/outOrderA.txt");
-            this.paths.put("idsToShipPath","output/pricesA/outShipA.txt");
 
         } else if (ip.equals("Ж")){
             this.activeGroups = Set.of("Актив/Актив / Внесезонные","Актив/Проблемы с поставками / Дефицит",
                     "Актив/Спрос с сентября / Внесезонные","Актив","Актив/Весна - Лето (март-октябрь)",
-                    "Актив/Осень / Сезонные","Актив/Новый год / Сезонные","Актив/Зима / Сезонные");
+                    "Актив/Осень / Сезонные","Актив/Новый год / Сезонные","Актив/Зима / Сезонные","Актив/Не оформлено");
             this.illiquidGroups = Set.of("Неликвид/Весна - лето / Неликвид","Неликвид/Март / Сезонные",
-            "Неликвид/Май / Сезонные (Пасха 9 мая)","Неликвид/Лето (только лето) / Сезонные");
+            "Неликвид/Май / Сезонные (Пасха 9 мая)");
             this.paths.put("campaignsPath","output/campaigns/stopCampaignsJ.txt");
             this.paths.put("campaignsEndPath","output/campaigns/endCampaignsJ.txt");
-            this.paths.put("pricesToChangePath","output/pricesJ/outChangesJ.txt");
-            this.paths.put("idsToAddToActivePath","output/pricesJ/outAddToActiveJ.txt");
-            this.paths.put("idsToAddToNewPath","output/pricesJ/outAddToNewJ.txt");
-            this.paths.put("idsToAddToIlliquidPath","output/pricesJ/outAddToIlliquidJ.txt");
-            this.paths.put("idsToOrderPath","output/pricesJ/outOrderJ.txt");
-            this.paths.put("idsToShipPath","output/pricesJ/outShipJ.txt");
-            } else {
-            System.out.println("something went wrong");
+            } else if (ip.equals("В")){
+            this.activeGroups = Set.of("Актив/Актив / Внесезонные","Актив/Проблемы с поставками / Дефицит",
+                    "Актив/Спрос с сентября / Внесезонные","Актив","Актив/Весна - Лето (март-октябрь)",
+                    "Актив/Осень / Сезонные","Актив/Новый год / Сезонные","Актив/Зима / Сезонные","Актив/Не оформлено");
+            this.illiquidGroups = Set.of("Неликвид/Весна - лето / Неликвид","Неликвид/Март / Сезонные",
+                    "Неликвид/Май / Сезонные (Пасха 9 мая)");
+            this.paths.put("campaignsPath","output/campaigns/stopCampaignsV.txt");
+            this.paths.put("campaignsEndPath","output/campaigns/endCampaignsV.txt");
         }
         this.setIndexes();
     }
@@ -83,7 +77,6 @@ public class WBTable {
         this.indexes.put(Fields.saleProfitName,this.header.indexOf(Fields.saleProfitName));
         this.indexes.put(Fields.turnoverAllName,this.header.indexOf(Fields.turnoverAllName));
         this.indexes.put(Fields.salePriceName,this.header.indexOf(Fields.salePriceName));
-        this.indexes.put(Fields.recentSalesName,this.header.indexOf(Fields.recentSalesName));
     }
 
     public int getColumnIndex(String columnName){

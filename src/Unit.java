@@ -27,7 +27,6 @@ public class Unit {
         this.currentPrice = (float) Utils.parseIntForNA(unitLine[indexes.get(Fields.currentPriceName)]);
         this.currentCommission = (float) Utils.parseIntForNA(unitLine[indexes.get(Fields.currentCommissionName)]);
         this.salePrice = (float) Utils.parseIntForNA(unitLine[indexes.get(Fields.salePriceName)]);
-        this.recentSales = Utils.parseIntForNA(unitLine[indexes.get(Fields.recentSalesName)]);
     }
 
     public int countPriceChangeForProfit(float targetProfit){

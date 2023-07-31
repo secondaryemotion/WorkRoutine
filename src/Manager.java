@@ -4,24 +4,14 @@ import java.util.ArrayList;
 public class Manager {
 
 
-    public WBTable readPnAList() {
-        String pnaPath = "csv/pnalist.csv";
-        String pnaFile = Utils.readFile(pnaPath);
-        String[] tableLines = pnaFile.split("\n");
-        WBTable PnAList = new WBTable();
-        PnAList.createTable(tableLines);
-        PnAList.setInfo("А");
-        return PnAList;
-    }
-
-    public WBTable readPnJList() {
-        String pnjPath = "csv/pnjlist.csv";
-        String pnjFile = Utils.readFile(pnjPath);
-        String[] tableLines = pnjFile.split("\n");
-        WBTable PnJList = new WBTable();
-        PnJList.createTable(tableLines);
-        PnJList.setInfo("Ж");
-        return PnJList;
+    public WBTable readPnList(String path) {
+        String pnFile = Utils.readFile(path);
+        assert pnFile != null;
+        pnFile = pnFile.replace("liana_redkalist_2,3_12XXX","liana_redkalist_23_12XXX");
+        String[] tableLines = pnFile.split("\n");
+        WBTable PnList = new WBTable();
+        PnList.createTable(tableLines);
+        return PnList;
     }
 
     public void processCampaignsAndPrepareChangesList(WBTable table, boolean isNewYear) throws IOException {
@@ -35,28 +25,33 @@ public class Manager {
                 int remainderInWaiting = currentUnit.remainderInWaiting;
                 int remainderInStock = currentUnit.remainderInStock;
                 int remainderTotal = remainderWB + remainderInStock;
+                float currentProfit = currentUnit.currentProfit;
                 String itemGroup = currentUnit.itemGroup;
                 String itemID = currentUnit.itemID;
 
-                if (turnoverRate < 30) { // оборачиваемость менее 30 дней
-                    if (itemGroup.equals("Актив/Новый год / Сезонные") && isNewYear) {
-                        if (turnoverRate < (5)) {
-                            stopCampaigns.add(itemID);
-                            continue;
-                        }
-                        continue;
-                    }
+                if (currentProfit >= 29){
+                    stopCampaigns.add(itemID);
+                    continue;
+                }
+
+                if (!table.illiquid.contains(itemGroup) && turnoverRate < 24) { // оборачиваемость менее 17 дней
+                    stopCampaigns.add(itemID);
+                    continue;
+                }
+                if (table.illiquid.contains(itemGroup) && turnoverRate < 45) { // оборачиваемость менее 40 дней
                     stopCampaigns.add(itemID);
                     continue;
                 }
                 if (remainderTotal < 50) {
+                    //список для приостановки
                     if (table.illiquid.contains(itemGroup) && remainderInWaiting == 0) { // неликвид с малым остатком
                         endCampaigns.add(itemID);//список для закрытия
-                        stopCampaigns.add(itemID);//добавляем тк табличка считает разницу между списками
-                    } else {
-                        stopCampaigns.add(itemID); //список для приостановки
                     }
+                    stopCampaigns.add(itemID);//добавляем тк табличка считает разницу между списками
+                    continue;
                 }
+
+
             }
         }
         Utils.writeArrayListToFile(stopCampaigns, table.paths.get("campaignsPath"));
@@ -85,12 +80,11 @@ public class Manager {
 
 
                 if (currentUnit.salePrice >= currentUnit.currentPrice){
-                    if (currentUnit.turnoverAll > 10){
-                        continue;
-                    } else {
-                        int priceChange = currentUnit.countPriceChangeForProfit(currentUnit.currentProfit+15);
-                        priceChanges.add(currentUnit.itemID + "," + priceChange + ",товар кончается +15%");
+                    if (currentUnit.turnoverAll <= 3) {
+                        int priceChange = currentUnit.countPriceChangeForProfit(currentUnit.currentProfit + 15);
+                        priceChanges.add(currentUnit.itemID + "," + priceChange + ",товар в акции но кончается +15%");
                     }
+                    continue;
                 } //не трогаем ребят в акции, только если малый остаток
 
                 if (table.activeGroups.contains(currentUnit.itemGroup) && currentUnit.currentProfit < 15 && currentUnit.recentSales >= 5) {
@@ -114,9 +108,9 @@ public class Manager {
                 } else if (currentUnit.turnoverWB < 20) { //небольшое повышение до 20 дней
                 int priceChange = currentUnit.countPriceChangeForProfit(currentUnit.currentProfit + 2);
                 priceChanges.add(currentUnit.itemID + "," + priceChange + ",повышение 2% до 20 дней");
-                }
+                                }
 
-                if (currentUnit.turnoverWB > 120 && currentUnit.remainderWB > 40) { //не продаются, остаток от 40
+                if (currentUnit.turnoverWB > 100 && currentUnit.remainderWB > 40) { //не продаются, остаток от 40
                     String result = priceChangeForHighTurnover(currentUnit, table);
                     priceChanges.add(result);
 
@@ -129,11 +123,11 @@ public class Manager {
             }
         }
         Utils.writeArrayListToFile(priceChanges, table.paths.get("pricesToChangePath"));
-        //Utils.writeArrayListToFile(idsToAddToActive, table.paths.get("idsToAddToActivePath"));
-        //Utils.writeArrayListToFile(idsToAddToNew, table.paths.get("idsToAddToNewPath"));
-        //Utils.writeArrayListToFile(idsToAddToIlliquid, table.paths.get("idsToAddToIlliquidPath"));
-        //Utils.writeArrayListToFile(idsToOrder, table.paths.get("idsToOrderPath"));
-        //Utils.writeArrayListToFile(idsToShip, table.paths.get("idsToShipPath"));
+        Utils.writeArrayListToFile(idsToAddToActive, table.paths.get("idsToAddToActivePath"));
+        Utils.writeArrayListToFile(idsToAddToNew, table.paths.get("idsToAddToNewPath"));
+        Utils.writeArrayListToFile(idsToAddToIlliquid, table.paths.get("idsToAddToIlliquidPath"));
+        Utils.writeArrayListToFile(idsToOrder, table.paths.get("idsToOrderPath"));
+        Utils.writeArrayListToFile(idsToShip, table.paths.get("idsToShipPath"));
         System.out.println("Скрипт выполнен");
 
     }
@@ -176,12 +170,10 @@ public class Manager {
         } else if (table.activeGroups.contains(currentUnit.itemGroup)) {
             if (currentUnit.currentProfit >= 25) { //если рент больше 25%, снизить до 25%
                 int priceChange = currentUnit.countPriceChangeForProfit(25);
-                System.out.println(currentUnit.itemID);
-                System.out.println(currentUnit.currentProfit);
                 return (currentUnit.itemID + "," + priceChange + ",актив выше 25% в 25%");
-            } else if (currentUnit.currentProfit >= 20) { //снижаем на 2%
+            } else { //снижаем на 2%
                 int priceChange = currentUnit.countPriceChangeForProfit(currentUnit.currentProfit - 2);
-                return (currentUnit.itemID + "," + priceChange + ",актив выше 20% -2%");
+                return (currentUnit.itemID + "," + priceChange + ",актив -2%");
             }
         }
         return "";
